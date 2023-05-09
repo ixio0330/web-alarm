@@ -1,7 +1,38 @@
+'use client';
+
 import Image from 'next/image'
 import styles from './page.module.css'
+import { useEffect } from 'react'
 
 export default function Home() {
+
+  const runAlarmAfterThreeSecond = () => {
+    if (Notification.permission !== 'granted') {
+      console.log('알림 설정이 꺼져있습니다.');
+      return;
+    }
+
+    setTimeout(() => {
+      new Notification('알림 테스트', { body: '알림입니다.' });
+    }, 3000);
+  };
+  
+  useEffect(() => {
+    if (!Notification) {
+      console.log('알림을 지원하지 않는 브라우저입니다.');
+      return;
+    }
+
+    Notification.requestPermission().then((permission) => {
+      if (permission === 'granted') {
+        console.log('알림 권한이 허용된 상태');
+        return;
+      }
+      console.log('알림 권한이 거부된 상태');
+    });
+    runAlarmAfterThreeSecond();
+  }, []);
+
   return (
     <main className={styles.main}>
       <div className={styles.description}>
